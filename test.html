@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<div class="test"></div>
+	<ul class="pagination"></ul>
+</body>
+</html>
+
+<style>
+	.test{
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(450px, auto));
+		gap: 1rem;
+		text-align: center;
+	}
+
+	img{
+		height: 500px;
+		width: 400px;
+		object-fit: cover;
+	}
+</style>
+
+<script>
+ 
+	async function breakingBad(){
+		let pagination = document.querySelector('.pagination')
+		let itemPage = 9
+		let test = document.querySelector('.test')
+
+		let link = 'https://breakingbadapi.com/api/characters'
+		let responce = await fetch(link)
+		responce = await responce.json()		
+		let pages = Math.round(responce.length / itemPage)
+		responce2 = responce.splice(0, itemPage)
+
+		for(let i=1;i<=pages;i++){
+			let li = document.createElement('li')
+			li.innerHTML = i
+			pagination.appendChild(li)
+			li.onclick = function() {
+				test.innerHTML = ''
+				console.log(itemPage * i)
+				responce.splice((itemPage * i) - itemPage, itemPage * i)
+				console.log(responce)
+				for(let key in responce) {
+					test.innerHTML += 
+					`<div class="item">
+						<h3>Name: ${responce[key].name}</h3>
+						<img class="img" src=${responce[key].img}>
+					</div>`
+				}
+			}			
+		}
+		
+		for(let key in responce2) {
+			test.innerHTML += 
+			`<div class="item">
+				<h3>Name: ${responce2[key].name}</h3>
+				<img class="img" src=${responce2[key].img}>
+			</div>`
+		}
+	}
+
+	breakingBad()
+
+</script>
